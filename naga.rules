@@ -1,1 +1,1 @@
-ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0015", ENV{ID_INPUT_KEYBOARD}=="?*",  MODE="0644", SYMLINK+="naga_keyboard", RUN+="/usr/bin/perl /usr/local/bin/naga_plugged.pl"
+ATTRS{idVendor}=="1532", ATTRS{idProduct}=="0040", ENV{ID_USB_INTERFACE_NUM}=="02",  MODE="0644", SYMLINK+="naga_keyboard", RUN+="/usr/bin/perl /usr/local/bin/naga_plugged.pl"
