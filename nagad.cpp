@@ -16,18 +16,6 @@
 #include <termios.h>
 #include <signal.h>
 
-void handler (int sig)
-{
-    printf ("\nexiting...(%d)\n", sig);
-    exit (0);
-}
-
-void perror_exit (const char *error)
-{
-    perror (error);
-    handler (9);
-}
-
 char basedir[1024];
 void init()
 {
@@ -41,7 +29,6 @@ void init()
     sprintf(xauth, "%s/.Xauthority", getenv("HOME"));
     setenv("XAUTHORITY", xauth, 1);
     setenv("DISPLAY", ":0.0", 1);
-    system("/usr/local/bin/naga_disablekbd.pl");
 }
 
 
@@ -102,26 +89,37 @@ void docode(int code)
     
 }
 
+int waitForDevice()
+{
+    int fd;
+    char name[256] = "Unknown";
+    const char *device = "/dev/naga_keyboard";
+
+    while ((fd = open (device, O_RDONLY)) == -1) {
+        printf ("%s is not a vaild device.\n", device);
+        sleep(1);
+    }
+
+    //Print Device Name
+    ioctl (fd, EVIOCGNAME (sizeof (name)), name);
+    printf ("Reading From : %s (%s)\n", device, name);
+
+    system("/usr/local/bin/naga_disablekbd.pl");
+    return fd;
+}
+
 int main (int argc, char *argv[])
 {
     struct input_event ev[64];
     int fd, rd, value, size = sizeof (struct input_event);
-    char name[256] = "Unknown";
-    const char *device = NULL;
-    device = "/dev/naga_keyboard";
 
-    //Open Device
-    if ((fd = open (device, O_RDONLY)) == -1){
-        printf ("%s is not a vaild device.\n", device);
-        return -1;
-    }
-    //Print Device Name
-    ioctl (fd, EVIOCGNAME (sizeof (name)), name);
-    printf ("Reading From : %s (%s)\n", device, name);
     init();
+    fd = waitForDevice();
     while (1){
-        if ((rd = read (fd, ev, size * 64)) < size)
-            perror_exit ("read()");      
+        if ((rd = read (fd, ev, size * 64)) < size) {
+            close(fd);
+            fd = waitForDevice();
+        }
 
         value = ev[0].value;
 
