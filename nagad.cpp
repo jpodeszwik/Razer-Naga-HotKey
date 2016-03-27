@@ -58,8 +58,8 @@ void runcmd(int button)
 void docode(int code)
 {
     static char map[256];
-    static int init = 0;
-    if(init == 0){
+    static bool init = true;
+    if(init){
         memset(map, 0, sizeof(map));
         // when in num position
         map[79] = 1;
@@ -95,6 +95,7 @@ void docode(int code)
         map[12] = 11;
         map[13] = 12;
 
+        init = false;
     }
     if(code > 0 && code <= 255 && map[code])
         runcmd(map[code]);
