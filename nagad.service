@@ -1,0 +1,9 @@
+[Unit]
+Description=Side keys management for Razer Naga 2014
+
+[Service]
+ExecStart=/usr/local/bin/nagad
+
+[Install]
+WantedBy=default.target
+
