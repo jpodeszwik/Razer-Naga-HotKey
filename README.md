@@ -5,6 +5,9 @@ Installation:
 ```
 make
 sudo make install
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+systemctl --user daemon-reload
 systemctl --user enable nagad.service
 systemctl --user start nagad.service
 ```
