@@ -119,6 +119,7 @@ int main (int argc, char *argv[])
         if ((rd = read (fd, ev, size * 64)) < size) {
             close(fd);
             fd = waitForDevice();
+            continue;
         }
 
         value = ev[0].value;
